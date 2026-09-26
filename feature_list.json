@@ -76,18 +76,18 @@
       "id": "f-sh-05",
       "lane": "shared",
       "title": "App Shell and Design Tokens",
-      "priority": 5,
-      "status": "not_started",
-      "depends_on": [
-        "f-sh-01"
-      ],
-      "user_visible_behavior": "Every screen shares the lab-notebook shell: paper background, beige index navigation, red margin line, and the red, amber, and green status marks.",
-      "verification": [
-        "Run `pnpm build`.",
-        "Open each route in a browser and confirm the shell and nav render.",
-        "Compare against `design/01-timeline.png`."
-      ],
-      "evidence": ""
+  "priority": 5,
+  "status": "passing",
+  "depends_on": [
+  "f-sh-01"
+  ],
+  "user_visible_behavior": "Every screen shares the lab-notebook shell: paper background, beige index navigation, red margin line, and the red, amber, and green status marks.",
+  "verification": [
+  "Run `pnpm build`.",
+  "Open each route in a browser and confirm the shell and nav render.",
+  "Compare against `design/01-timeline.png`."
+  ],
+  "evidence": "2026-09-26: tsc --noEmit clean; vitest 14/14; pnpm build ok (/, /capture, /ask, /check, /graph, /lab, /impact static). Browser (next start): all 7 routes render brand row + ORBIT label + nav, aria-current matches route, h1 per screen. Screenshots at 1280x720 and 610x741 match 01-timeline.png layout (beige index, underlined active item, red margin line, serif titles, Failed/Revisitable/Current legend). Fixed: `current` color token collided with Tailwind currentColor (green dot rendered black); renamed to `live`."
     },
     {
       "id": "f-a-01",

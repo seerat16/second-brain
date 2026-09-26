@@ -5,7 +5,7 @@ export type Mark = 'dead-end' | 'revisitable' | 'current' | 'superseded'
 const MARK_STYLES: Record<Mark, { dot: string; text: string; label: string }> = {
   'dead-end': { dot: 'bg-dead-end', text: 'text-dead-end', label: 'Dead end' },
   revisitable: { dot: 'bg-revisitable', text: 'text-revisitable', label: 'Revisitable' },
-  current: { dot: 'bg-current', text: 'text-current', label: 'Current' },
+  current: { dot: 'bg-live', text: 'text-live', label: 'Current' },
   superseded: { dot: 'bg-muted-foreground', text: 'text-muted-foreground', label: 'Superseded' },
 }
 
@@ -21,6 +21,18 @@ export function StatusMark({ mark, label }: { mark: Mark; label?: string }) {
       <span aria-hidden="true" className={`size-2.5 rounded-full ${style.dot}`} />
       {label ?? style.label}
     </span>
+  )
+}
+
+export function StatusLegend({ marks = ['dead-end', 'revisitable', 'current'] }: { marks?: Mark[] }) {
+  return (
+    <ul aria-label="Status legend" className="flex flex-wrap gap-x-6 gap-y-2">
+      {marks.map((mark) => (
+        <li key={mark}>
+          <StatusMark mark={mark} label={mark === 'dead-end' ? 'Failed' : undefined} />
+        </li>
+      ))}
+    </ul>
   )
 }
 

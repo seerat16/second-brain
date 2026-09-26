@@ -4,7 +4,7 @@
 
 The shared foundation is scaffolded: Next.js 16 app shell, shared types (`lib/types.ts`), MongoDB client, placeholder contracts (`lib/contracts/`), the Orbit fixture, db setup and fixture scripts, and `/api/health` and `/api/ready`.
 
-The product contract is `docs/plans/2026-09-26-002-feat-projectbrain-dead-end-memory-plan.md`. Work is split into three lanes (see `docs/README.md`): shared `f-sh-01..05`, Capture `f-a-01..09`, and Recall `f-b-01..09`. That makes 23 features. `f-sh-04` is `passing`, `f-sh-01` is `in_progress`, and the rest are `not_started`.
+The product contract is `docs/plans/2026-09-26-002-feat-projectbrain-dead-end-memory-plan.md`. Work is split into three lanes (see `docs/README.md`): shared `f-sh-01..05`, Capture `f-a-01..09`, and Recall `f-b-01..09`. That makes 23 features. All five shared features (`f-sh-01..05`) are `passing`, so Checkpoint 0 is closed. The rest are `not_started`.
 
 Stack this repo is held to:
 
@@ -24,13 +24,13 @@ Confirmed product direction:
 
 ## Next best action
 
-Finish `f-sh-05` (app shell and design tokens, checked in a browser). That closes Checkpoint 0, and then the Capture (`f-a-01`) and Recall (`f-b-01`) lanes start in parallel.
+Checkpoint 0 is closed. Start the two lanes in parallel: Person 1 takes `f-a-01` (message classification) and Person 2 takes `f-b-01` (dead-end check). Each lane marks its own feature `in_progress`.
 
 Before `f-a-01`/`f-b-01` can call models, add `OPENAI_API_KEY` (embeddings) and `OPENROUTER_API_KEY` (classify, judge) to the project vars. `/api/ready` lists which features each missing key blocks.
 
 ## In progress
 
-- None. `f-sh-01`, `f-sh-02`, `f-sh-03`, and `f-sh-04` are `passing`; `f-sh-05` is `not_started`.
+- None. `f-sh-01` through `f-sh-05` are `passing`.
 
 ## Known risks
 
@@ -42,6 +42,12 @@ Before `f-a-01`/`f-b-01` can call models, add `OPENAI_API_KEY` (embeddings) and 
 - Graph view, pull-request comments, voice transcription, and nightly reflection are later than the demo path. Starting them first would skip the warning, the citation, and the measured harness change.
 
 ## Session log
+
+### 2026-09-26 — f-sh-05 App Shell and Design Tokens
+
+- Matched the shell to `design/01-timeline.png`: ProjectBrain brand row, ORBIT project label, serif nav with an underlined active item, thin red margin line, and a shared `StatusLegend`.
+- Fixed a bug where the green `current` token collided with Tailwind's `currentColor` (the dot rendered black). Renamed it to `live`. Use `bg-live`/`text-live` for current decisions.
+- Verified: tsc clean, vitest 14/14, `pnpm build` ok, and all 7 routes render in the shell with the correct `aria-current` in the browser at desktop and narrow widths.
 
 ### 2026-09-26 — Shared tasks 1-3 verified on Atlas
 
