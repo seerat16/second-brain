@@ -6,7 +6,7 @@
       "lane": "shared",
       "title": "Platform Foundation and Environments",
       "priority": 1,
-      "status": "in_progress",
+      "status": "passing",
       "depends_on": [],
       "user_visible_behavior": "A developer can open ProjectBrain locally, see a healthy API response, and see a clear unavailable state when MongoDB or a required provider configuration is missing.",
       "verification": [
@@ -17,14 +17,14 @@
         "Unset `MONGODB_URI` and confirm `/api/ready` returns 503 naming it.",
         "Confirm `.env*` files are git-ignored and no client bundle references a provider key."
       ],
-      "evidence": ""
+      "evidence": "2026-09-26 (Atlas): pnpm db:setup ok; next build ok; next start -> GET /api/health 200 {ok:true}; GET /api/ready 200 {ok:true,mongodb:\"reachable\"}; with MONGODB_URI unset GET /api/ready 503 {ok:false,reason:\"missing_config\",missing:[\"MONGODB_URI\"]}; .env.development.local git-ignored; .next/static has no MONGODB_URI or provider keys (only sk- hit is React \"mask-type\")."
     },
     {
       "id": "f-sh-02",
       "lane": "shared",
       "title": "Memory Collections and Search Indexes",
       "priority": 2,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-sh-01"
       ],
@@ -36,14 +36,14 @@
         "Insert an attempt for a second project and confirm it is excluded.",
         "Run `pnpm db:setup` a second time and confirm no errors."
       ],
-      "evidence": ""
+      "evidence": "2026-09-26 (Atlas): pnpm db:setup created 12 collections and search indexes attempts_vector, decisions_vector, memory_text, all READY; inserted orbit attempt/decision/edge and read back by projectId {attempt:1,decision:1,edge:1}; $vectorSearch attempts_vector filter {projectId:orbit,outcome in [failed,abandoned]} returned only verify-orbit-att (score 1), identical-vector attempt for project other excluded; second pnpm db:setup reported all indexes exist (READY), no errors; test rows removed."
     },
     {
       "id": "f-sh-03",
       "lane": "shared",
       "title": "Harness Config v1",
       "priority": 3,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-sh-02"
       ],
@@ -53,7 +53,7 @@
         "Load fixtures and read the active harness for `orbit`.",
         "Confirm there is exactly one active version."
       ],
-      "evidence": ""
+      "evidence": "2026-09-26 (Atlas): vitest harness test passed (14/14 total); pnpm db:fixtures -> orbit: harness v1 active; getActiveHarness(orbit) from Atlas -> harness-orbit-v1 version 1, retrieval {k:8,minScore:0.72,hybridWeight:0.3}, routing classify/extract openai/gpt-5-mini, judge/reflect anthropic/claude-sonnet-4.5; countDocuments({projectId:orbit,active:true}) = 1; inserting a second active version rejected with E11000 on one_active."
     },
     {
       "id": "f-sh-04",
