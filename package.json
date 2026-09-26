@@ -12,7 +12,8 @@
     "db:setup": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/db-setup.ts",
     "db:fixtures": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/load-fixtures.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/seed-orbit.ts",
-    "eval": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/eval.ts"
+    "eval": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/eval.ts",
+    "verify:lanes": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env.development.local scripts/verify-lanes.ts"
   },
   "dependencies": {
     "mongodb": "^7.6.0",

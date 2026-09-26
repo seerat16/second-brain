@@ -1,0 +1,22 @@
+[
+  { "text": "Decision: we use Atlas Search for task search from now on.", "label": "decision" },
+  { "text": "We're going with Better Auth for login, replacing the JWT setup.", "label": "decision" },
+  { "text": "Decided: board exports are CSV only for the launch.", "label": "decision" },
+  { "text": "Decision: the realtime service moves to AWS App Runner as a long-running container.", "label": "decision" },
+  { "text": "Starting on live board updates. Going to try WebSockets straight from our serverless functions.", "label": "attempt_start" },
+  { "text": "Spike on Postgres LIKE for task search today, will report back.", "label": "attempt_start" },
+  { "text": "Trying the cheapest model for ticket summaries this afternoon.", "label": "attempt_start" },
+  { "text": "Tried WebSockets on the serverless functions for 2 days. Connections drop at the 10s timeout, see log. Switching to SSE.", "label": "attempt_result" },
+  { "text": "Postgres LIKE search is 2.4s p95 on 200k tasks, benchmark attached. Moving search to Atlas Search.", "label": "attempt_result" },
+  { "text": "Dropping the PDF export library, AGPL licence is a no for us. Lost about 6 hours on it.", "label": "attempt_result" },
+  { "text": "Cheapest model for ticket summaries only hit 61% on our eval set. Not shipping that.", "label": "attempt_result" },
+  { "text": "I'm about to add socket.io to the API routes so the board updates live.", "label": "intent" },
+  { "text": "Plan to add a PDF export next sprint using that open source library.", "label": "intent" },
+  { "text": "Thinking of moving search to Postgres full text next week.", "label": "intent" },
+  { "text": "Has anyone looked at why the board flickers on reconnect?", "label": "question" },
+  { "text": "What did we decide about session storage?", "label": "question" },
+  { "text": "Which model are we using for summaries right now?", "label": "question" },
+  { "text": "Heading to lunch at 12:30.", "label": "noise" },
+  { "text": "Thanks everyone, great demo today!", "label": "noise" },
+  { "text": "Standup moved to 10:15 tomorrow.", "label": "noise" }
+]

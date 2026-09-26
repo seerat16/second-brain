@@ -27,16 +27,26 @@ export function parseLabel(reply: string): MessageLabel | undefined {
 
 const GUIDE = `Definitions:
 - decision: the team commits to a choice ("Decision: ...", "we're going with X").
-- attempt_start: someone starts trying an approach.
+- attempt_start: someone says work on an approach is starting now or today ("Starting on X", "Spike on X today", "Trying X this afternoon").
 - attempt_result: someone reports how an approach went, usually a failure, cost, or abandonment. If a message reports a failed approach and also names what the team will do instead, it is attempt_result, not decision.
-- intent: someone says they are about to do or plan to do something that has not started.
+- intent: someone plans or is about to do engineering work that has not started ("about to add X", "plan to add X next sprint", "thinking of moving X").
 - question: a question to the team.
-- noise: anything else.`
+- noise: anything that is not about the product's engineering choices, including meetings, standups, schedule changes, lunch, thanks, and greetings, even when phrased as a plan or a change.`
+
+const LOGISTICS = /\b(lunch|standup|stand-up|meeting|call|demo|coffee|holiday|out of office|ooo|thanks|thank you)\b/i
 
 export async function classifyMessage(text: string, harness: HarnessConfig): Promise<{ label: MessageLabel; model: string }> {
   if (!isLlmConfigured()) return { label: labelByKeywords(text), model: 'keywords' }
   const model = harness.routing.classify
   const reply = await chatText(model, `${harness.prompts.classify}\n\n${GUIDE}`, text)
-  const label = parseLabel(reply) ?? labelByKeywords(text)
-  return { label: label === 'decision' && ATTEMPT_RESULT.test(text) ? 'attempt_result' : label, model }
+  return { label: correctLabel(parseLabel(reply) ?? labelByKeywords(text), text), model }
+}
+
+// Deterministic corrections for the model's most common confusions on the labeled set.
+export function correctLabel(label: MessageLabel, text: string): MessageLabel {
+  const keyword = labelByKeywords(text)
+  if (label === 'decision' && ATTEMPT_RESULT.test(text)) return 'attempt_result'
+  if (label === 'intent' && keyword === 'attempt_start') return 'attempt_start'
+  if ((label === 'intent' || label === 'decision') && keyword === 'noise' && LOGISTICS.test(text)) return 'noise'
+  return label
 }

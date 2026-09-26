@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { getActiveHarness } from '../contracts/get-active-harness'
 import { collection } from '../db'
 import { chatJson } from '../llm'
-import type { HarnessConfig } from '../types'
+import type { Feedback, HarnessConfig } from '../types'
 import { type EvalRun, runEvals } from './evals'
 
 export const harnessPatch = z.object({
@@ -53,18 +53,21 @@ export function decidePromotion(baseline: EvalRun, candidate: EvalRun): { promot
   return { promoted: true, reason: `Overall improved from ${b.overall} to ${c.overall} with precision ${c.deadEndPrecision}.` }
 }
 
+export function buildReflectionInput(active: HarnessConfig, baseline: EvalRun, feedback: Feedback[]) {
+  return {
+    current: { retrieval: active.retrieval, prompts: { judge: active.prompts.judge, answer: active.prompts.answer } },
+    scores: baseline.scores,
+    failures: baseline.cases.filter((item) => !item.pass),
+    feedback: feedback.map((item) => ({ verdict: item.verdict, target: item.target, note: item.note })),
+  }
+}
+
 async function proposePatch(active: HarnessConfig, baseline: EvalRun): Promise<HarnessPatch> {
   const feedback = await (await collection('feedback')).find({ projectId: active.projectId }).sort({ createdAt: -1 }).limit(20).toArray()
-  const failures = baseline.cases.filter((item) => !item.pass)
   return chatJson(
     active.routing.reflect,
-    `You tune a retrieval harness for a team memory tool. Propose exactly ONE small change that should fix the failing cases without adding false warnings. You may change retrieval.k, retrieval.minScore, prompts.judge, or prompts.answer. JSON shape: {"change": "one sentence describing the change", "retrieval"?: {"k"?: number, "minScore"?: number}, "prompts"?: {"judge"?: string, "answer"?: string}}.`,
-    JSON.stringify({
-      current: { retrieval: active.retrieval, prompts: { judge: active.prompts.judge, answer: active.prompts.answer } },
-      scores: baseline.scores,
-      failures,
-      feedback: feedback.map((item) => ({ verdict: item.verdict, target: item.target, note: item.note })),
-    }),
+    `You tune a retrieval harness for a team memory tool. Propose exactly ONE small change that should fix the failing cases without adding false warnings. Treat "not_relevant" feedback as evidence of false warnings. You may change retrieval.k, retrieval.minScore, prompts.judge, or prompts.answer. JSON shape: {"change": "one sentence describing the change", "retrieval"?: {"k"?: number, "minScore"?: number}, "prompts"?: {"judge"?: string, "answer"?: string}}.`,
+    JSON.stringify(buildReflectionInput(active, baseline, feedback)),
     harnessPatch,
   )
 }
