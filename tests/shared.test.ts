@@ -1,4 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+// Unit tests run offline against the fixture; live Atlas and OpenRouter are
+// exercised by pnpm eval and the API checks instead.
+beforeAll(() => {
+  vi.stubEnv('MONGODB_URI', '')
+  vi.stubEnv('OPENROUTER_API_KEY', '')
+})
 import { checkConditions, checkDeadEnds, getActiveHarness } from '@/lib/contracts'
 import { labelByKeywords } from '@/lib/contracts/ingest-message'
 import { missingKeys, readEnv } from '@/lib/env'
@@ -74,7 +81,7 @@ describe('orbit fixture (f-sh-04)', () => {
   })
 })
 
-describe('placeholder contracts (f-sh-04)', () => {
+describe('contracts without Atlas or a model key (fixture fallback)', () => {
   it('matches the socket.io plan to the WebSockets dead end', async () => {
     const [match] = await checkDeadEnds('orbit', 'Add socket.io so task boards get live updates for everyone on the team.')
     expect(match.attempt._id).toBe('att-websockets')

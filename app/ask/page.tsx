@@ -1,5 +1,11 @@
-import { PlannedScreen } from '@/components/planned-screen'
+import { AskForm } from '@/components/ask-form'
+import { PageHeader } from '@/components/states'
 
 export default function Page() {
-  return <PlannedScreen title="Ask the brain" description="Ask why the team chose or rejected something, and get an answer with citations." featureId="f-b-03" design="design/03-ask.png" />
+  return (
+    <>
+      <PageHeader title="Ask the brain" description="Ask why something is the way it is. Every answer cites the records it came from." />
+      <AskForm />
+    </>
+  )
 }

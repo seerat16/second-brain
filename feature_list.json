@@ -76,18 +76,18 @@
       "id": "f-sh-05",
       "lane": "shared",
       "title": "App Shell and Design Tokens",
-  "priority": 5,
-  "status": "passing",
-  "depends_on": [
-  "f-sh-01"
-  ],
-  "user_visible_behavior": "Every screen shares the lab-notebook shell: paper background, beige index navigation, red margin line, and the red, amber, and green status marks.",
-  "verification": [
-  "Run `pnpm build`.",
-  "Open each route in a browser and confirm the shell and nav render.",
-  "Compare against `design/01-timeline.png`."
-  ],
-  "evidence": "2026-09-26: tsc --noEmit clean; vitest 14/14; pnpm build ok (/, /capture, /ask, /check, /graph, /lab, /impact static). Browser (next start): all 7 routes render brand row + ORBIT label + nav, aria-current matches route, h1 per screen. Screenshots at 1280x720 and 610x741 match 01-timeline.png layout (beige index, underlined active item, red margin line, serif titles, Failed/Revisitable/Current legend). Fixed: `current` color token collided with Tailwind currentColor (green dot rendered black); renamed to `live`."
+      "priority": 5,
+      "status": "passing",
+      "depends_on": [
+        "f-sh-01"
+      ],
+      "user_visible_behavior": "Every screen shares the lab-notebook shell: paper background, beige index navigation, red margin line, and the red, amber, and green status marks.",
+      "verification": [
+        "Run `pnpm build`.",
+        "Open each route in a browser and confirm the shell and nav render.",
+        "Compare against `design/01-timeline.png`."
+      ],
+      "evidence": "2026-09-26: tsc --noEmit clean; vitest 14/14; pnpm build ok (/, /capture, /ask, /check, /graph, /lab, /impact static). Browser (next start): all 7 routes render brand row + ORBIT label + nav, aria-current matches route, h1 per screen. Screenshots at 1280x720 and 610x741 match 01-timeline.png layout (beige index, underlined active item, red margin line, serif titles, Failed/Revisitable/Current legend). Fixed: `current` color token collided with Tailwind currentColor (green dot rendered black); renamed to `live`."
     },
     {
       "id": "f-a-01",
@@ -104,14 +104,16 @@
         "Run the classifier unit tests.",
         "Classify 20 labeled Orbit messages and record accuracy."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-a-02",
       "lane": "ingest",
       "title": "Attempt and Decision Extraction",
       "priority": 7,
-      "status": "not_started",
+      "status": "in_progress",
       "depends_on": [
         "f-a-01"
       ],
@@ -121,14 +123,16 @@
         "Extract the Postgres LIKE result and verify blockers, evidence, and 9 hours.",
         "Extract the sessions, JWT, and Better Auth decisions and verify the supersede chain."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented OpenRouter extraction; live WebSockets extraction succeeded after evidence-schema fix. Remaining: dedicated Postgres LIKE 9h and auth-decision checks"
+      ]
     },
     {
       "id": "f-a-03",
       "lane": "ingest",
       "title": "Attempt Merging and the Ingest Pipeline",
       "priority": 8,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-a-02"
       ],
@@ -139,7 +143,11 @@
         "Verify embeddings exist on new records.",
         "Verify each step wrote a trace."
       ],
-      "evidence": ""
+      "evidence": [
+        "Live POST /api/capture against Atlas: start+result in one thread merged into one attempt with outcome, blockers, evidence",
+        "Noise message stored with label noise, no attempt/decision created",
+        "Same sourceId sent twice: second response duplicate=true (2026-09-26)"
+      ]
     },
     {
       "id": "f-a-04",
@@ -157,7 +165,9 @@
         "Capture a noise message and see the noise label with no record.",
         "Check loading and error states."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-a-05",
@@ -175,7 +185,9 @@
         "Confirm the supersede chain.",
         "Diff seeded records against `fixtures/orbit.json`."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-a-06",
@@ -192,14 +204,16 @@
         "Replay the socket.io fixture event twice and confirm one stored message.",
         "Send a bad signature and confirm 401."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-a-07",
       "lane": "ingest",
       "title": "Revisitable Conditions",
       "priority": 12,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-a-03"
       ],
@@ -211,7 +225,10 @@
         "Verify the `unblocks` edge.",
         "Replay and verify one transition."
       ],
-      "evidence": ""
+      "evidence": [
+        "Captured App Runner decision via /api/capture: att-websockets condition flipped to met with explanation and unblocks edge",
+        "Unrelated decision captured: no condition changed"
+      ]
     },
     {
       "id": "f-a-08",
@@ -251,7 +268,7 @@
       "lane": "serve",
       "title": "Dead-End Check",
       "priority": 15,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-sh-02",
         "f-sh-03",
@@ -265,7 +282,11 @@
         "Verify the judge can reject a high vector score.",
         "Verify project isolation."
       ],
-      "evidence": ""
+      "evidence": [
+        "POST /api/check socket.io plan on live Atlas: matched att-websockets above cutoff",
+        "POST unrelated plan: no warning",
+        "pnpm test 14/14 pass incl. contract fallback tests"
+      ]
     },
     {
       "id": "f-b-02",
@@ -283,7 +304,9 @@
         "Mark a result not relevant and read the feedback back.",
         "Check loading and error states."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-b-03",
@@ -302,7 +325,9 @@
         "Ask something unsupported.",
         "Verify citations resolve in the same project."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-b-04",
@@ -320,7 +345,9 @@
         "Open WebSockets and verify evidence, 14 hours, conditions, and SSE.",
         "After `f-a-07`, verify it turns amber in the browser."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-b-05",
@@ -339,14 +366,16 @@
         "Verify the warning record.",
         "Click Not relevant and verify feedback."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-b-06",
       "lane": "serve",
       "title": "Eval Set and Runner",
       "priority": 20,
-      "status": "not_started",
+      "status": "passing",
       "depends_on": [
         "f-b-01",
         "f-b-03"
@@ -356,14 +385,17 @@
         "Validate the case counts.",
         "Run `pnpm eval` on v1 and record the scores."
       ],
-      "evidence": ""
+      "evidence": [
+        "fixtures/evals.json: 12 dead-end, 4 ask, 2 staleness = 18 cases",
+        "pnpm eval on v1: precision 0.833, recall 0.833, citations 1, staleness 1, overall 0.9, hoursSaved 43"
+      ]
     },
     {
       "id": "f-b-07",
       "lane": "serve",
       "title": "Reflection and Promotion",
       "priority": 21,
-      "status": "not_started",
+      "status": "in_progress",
       "depends_on": [
         "f-b-06"
       ],
@@ -373,7 +405,9 @@
         "Run an improving candidate and verify promotion.",
         "Verify feedback is an input."
       ],
-      "evidence": ""
+      "evidence": [
+        "POST /api/harness/reflect promoted v2 (minScore 0.72->0.65): overall 0.9->0.95, precision 0.857, recall 1. Remaining: forced precision-lowering rejection and feedback-as-input checks"
+      ]
     },
     {
       "id": "f-b-08",
@@ -391,7 +425,9 @@
         "Run reflection from the button.",
         "Open Impact and check the hours-saved sum."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     },
     {
       "id": "f-b-09",
@@ -408,7 +444,9 @@
         "Select a node.",
         "Verify the `unblocks` edge after `f-a-07`."
       ],
-      "evidence": ""
+      "evidence": [
+        "Implemented (OpenRouter build, 2026-09-26); page/route returns 200 but spec verification steps not yet run"
+      ]
     }
   ]
 }

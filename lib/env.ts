@@ -23,10 +23,10 @@ export const REQUIRED_FOR_READY: EnvKey[] = ['MONGODB_URI']
 
 export const REQUIRED_BY_FEATURE: Record<string, EnvKey[]> = {
   'f-a-01': ['OPENROUTER_API_KEY'],
-  'f-a-02': ['OPENAI_API_KEY'],
+  'f-a-02': ['OPENROUTER_API_KEY'],
   'f-a-06': ['SLACK_SIGNING_SECRET'],
   'f-a-08': ['AWS_REGION', 'EVIDENCE_BUCKET'],
-  'f-b-01': ['OPENAI_API_KEY', 'OPENROUTER_API_KEY'],
+  'f-b-01': ['OPENROUTER_API_KEY'],
   'f-b-05': ['SLACK_BOT_TOKEN'],
 }
 

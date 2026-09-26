@@ -1,0 +1,27 @@
+{
+  "projectId": "orbit",
+  "deadEnd": [
+    { "id": "de-01", "plan": "Let's add live board updates with socket.io running inside our serverless functions.", "expect": "att-websockets" },
+    { "id": "de-02", "plan": "Going to build task search with LIKE queries over titles and descriptions in Postgres.", "expect": "att-postgres-like" },
+    { "id": "de-03", "plan": "Plan to add PDF export of boards using that AGPL-licensed PDF rendering library.", "expect": "att-pdf-library" },
+    { "id": "de-04", "plan": "Let's auto-summarise tickets with the cheapest language model we can find.", "expect": "att-cheap-summary" },
+    { "id": "de-05", "plan": "Open WebSocket connections from our Vercel functions so users see presence in real time.", "expect": "att-websockets" },
+    { "id": "de-06", "plan": "Search tasks by running ILIKE '%term%' on the tasks table in Postgres.", "expect": "att-postgres-like" },
+    { "id": "de-07", "plan": "Add Server-Sent Events for live board updates.", "expect": null },
+    { "id": "de-08", "plan": "Move task search onto Atlas Search with fuzzy matching.", "expect": null },
+    { "id": "de-09", "plan": "Add a dark mode toggle to the settings page.", "expect": null },
+    { "id": "de-10", "plan": "Let users export a board as a CSV file.", "expect": null },
+    { "id": "de-11", "plan": "Use Better Auth sessions for the new mobile app login.", "expect": null },
+    { "id": "de-12", "plan": "Use a mid-size model for ticket summaries; it scored 88 percent on our summary eval set.", "expect": null }
+  ],
+  "ask": [
+    { "id": "ask-01", "question": "Why don't we use Postgres for task search?", "expect": ["att-postgres-like", "dec-atlas-search"] },
+    { "id": "ask-02", "question": "Why did we stop using WebSockets for live updates?", "expect": ["att-websockets", "dec-sse"] },
+    { "id": "ask-03", "question": "What is our office wifi password?", "expect": [] },
+    { "id": "ask-04", "question": "Why did we drop the PDF export library?", "expect": ["att-pdf-library"] }
+  ],
+  "staleness": [
+    { "id": "st-01", "question": "How do we handle auth right now?", "current": "dec-better-auth", "stale": ["dec-sessions", "dec-jwt"] },
+    { "id": "st-02", "question": "Are we using JWT for auth?", "current": "dec-better-auth", "stale": ["dec-jwt"] }
+  ]
+}

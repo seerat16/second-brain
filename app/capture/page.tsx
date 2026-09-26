@@ -1,5 +1,11 @@
-import { PlannedScreen } from '@/components/planned-screen'
+import { CaptureForm } from '@/components/capture-form'
+import { PageHeader } from '@/components/states'
 
 export default function Page() {
-  return <PlannedScreen title="Capture" description="Type or paste a message and see what ProjectBrain saved from it." featureId="f-a-04" design="design/10-capture.png" />
+  return (
+    <>
+      <PageHeader title="Capture" description="Post what the team is trying or deciding. ProjectBrain labels it, extracts attempts and decisions, and updates the graph." />
+      <CaptureForm />
+    </>
+  )
 }

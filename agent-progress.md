@@ -4,7 +4,14 @@
 
 The shared foundation is scaffolded: Next.js 16 app shell, shared types (`lib/types.ts`), MongoDB client, placeholder contracts (`lib/contracts/`), the Orbit fixture, db setup and fixture scripts, and `/api/health` and `/api/ready`.
 
-The product contract is `docs/plans/2026-09-26-002-feat-projectbrain-dead-end-memory-plan.md`. Work is split into three lanes (see `docs/README.md`): shared `f-sh-01..05`, Capture `f-a-01..09`, and Recall `f-b-01..09`. That makes 23 features. All five shared features (`f-sh-01..05`) are `passing`, so Checkpoint 0 is closed. The rest are `not_started`.
+The product contract is `docs/plans/2026-09-26-002-feat-projectbrain-dead-end-memory-plan.md`. Work is split into three lanes (see `docs/README.md`): shared `f-sh-01..05`, Capture `f-a-01..09`, and Recall `f-b-01..09`. That makes 23 features. All five shared features (`f-sh-01..05`) are `passing`, so Checkpoint 0 is closed.
+
+Both lanes are now implemented on OpenRouter only: one key covers chat and 1536-dim embeddings, and OpenAI is not used. Status:
+
+- **Passing:** `f-a-03`, `f-a-07`, `f-b-01`, `f-b-06`.
+- **In progress:** `f-a-02` and `f-b-07`.
+- **Built, not verified yet:** the rest have code and pages that return 200, but their spec verification steps haven't been run. `feature_list.json` evidence says which.
+- **Not built:** `f-a-08` (S3 evidence storage) and `f-a-09` (AWS hosting and worker).
 
 Stack this repo is held to:
 
@@ -24,24 +31,37 @@ Confirmed product direction:
 
 ## Next best action
 
-Checkpoint 0 is closed. Start the two lanes in parallel: Person 1 takes `f-a-01` (message classification) and Person 2 takes `f-b-01` (dead-end check). Each lane marks its own feature `in_progress`.
-
-Before `f-a-01`/`f-b-01` can call models, add `OPENAI_API_KEY` (embeddings) and `OPENROUTER_API_KEY` (classify, judge) to the project vars. `/api/ready` lists which features each missing key blocks.
+Finish the verification steps for `f-a-02` and `f-b-07`, then work through the built-but-unverified features, one per lane at a time. Slack features (`f-a-06`, `f-b-05`) need `SLACK_SIGNING_SECRET` and `SLACK_BOT_TOKEN`. `f-a-08` and `f-a-09` need AWS credentials.
 
 ## In progress
 
-- None. `f-sh-01` through `f-sh-05` are `passing`.
+- `f-a-02` (ingest): Postgres LIKE 9-hour and auth-decision extraction checks remain.
+- `f-b-07` (serve): v2 was promoted, raising overall from 0.9 to 0.95. A forced rejection check and a feedback-as-input check remain.
 
 ## Known risks
 
-- The Atlas dev database `projectbrain` is live with the Orbit fixture loaded. Fixture attempts and decisions have no `embedding` yet, so real `$vectorSearch` on them returns nothing until `f-a-02` (embeddings) runs.
+- The Atlas `projectbrain` database is seeded with Orbit plus OpenRouter embeddings (`pnpm db:seed`). Live checks also left some test captures and harness v2 in Atlas, so re-seed before a demo.
+- OpenRouter limits new accounts to 20 requests per minute per model. `lib/llm.ts` retries 429s with backoff, but running the eval and reflection at the same time is slow.
 - The v0 dev preview failed to start on a sandbox-injected adapter. The production build succeeds.
-- OpenAI, OpenRouter, Slack, and AWS credentials are not configured yet.
-- `checkDeadEnds`, `checkConditions`, and `ingestMessage` are placeholders (keyword and fixture based). Their owning features (`f-b-01`, `f-a-07`, `f-a-03`) replace the bodies without changing the signatures.
+- Slack and AWS credentials are not configured.
 - The retired collaboration-suite plan and its screen images are no longer requirements. Do not restore them as product scope.
 - Graph view, pull-request comments, voice transcription, and nightly reflection are later than the demo path. Starting them first would skip the warning, the citation, and the measured harness change.
 
 ## Session log
+
+### 2026-09-26 — Both lanes on OpenRouter
+
+- Added `lib/llm.ts`: an OpenRouter-only client for chat, JSON output, and embeddings, with retry on 429. Removed `OPENAI_API_KEY` from the required env.
+- Capture lane: classify, extract, the merge/ingest pipeline, idempotent `sourceId`, revisitable conditions, Slack events and interactions routes, `/api/capture`, and the Capture page.
+- Recall lane: dead-end check, Ask with citations, eval set and runner, reflection and promotion, feedback, and the Timeline, dead-end detail, Check, Ask, Graph, Lab, and Impact pages.
+- Evidence:
+  - `tsc` clean, 14/14 tests, and the build passes.
+  - `pnpm db:seed` loaded 6 messages, 4 attempts, 5 decisions, and 5 edges.
+  - Duplicate capture is detected.
+  - The App Runner decision reopens WebSockets.
+  - `pnpm eval` on v1 scored overall 0.9.
+  - Reflection promoted v2 (0.95).
+  - All 8 pages return 200, and the dead-end detail page was checked in the browser.
 
 ### 2026-09-26 — f-sh-05 App Shell and Design Tokens
 
